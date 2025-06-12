@@ -21,6 +21,17 @@ func NewBookHandler(router fiber.Router,svc interfaces.BookserviceInter){
 	router.Delete("/books/:id", handlers.Delete)
 }
 
+
+// @Summary Create a new book
+// @Description Creates a new book with the provided data
+// @Tags books
+// @Accept json
+// @Produce json
+// @Param book body model.Books true "Book to create"
+// @Success 201 {object} model.Books
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /books [post]
 func (h *BookHandler) Create(c *fiber.Ctx) error {
 	Book := new(model.Books)
 	if err := c.BodyParser(Book); err != nil {
@@ -39,6 +50,14 @@ func (h *BookHandler) Create(c *fiber.Ctx) error {
 	})
 }
 
+
+// @Summary Get all books
+// @Description Returns all available books
+// @Tags books
+// @Produce json
+// @Success 200 {array} model.Books
+// @Failure 500 {object} map[string]string
+// @Router /books [get]
 func (h *BookHandler) GetAll(c *fiber.Ctx) error {
 	Books, err := h.SVC.GetAll()
 	if err != nil {
@@ -52,6 +71,17 @@ func (h *BookHandler) GetAll(c *fiber.Ctx) error {
 	})
 }
 
+// @Summary Update a book
+// @Description Updates the book with the given ID
+// @Tags books
+// @Accept json
+// @Produce json
+// @Param id path int true "Book ID"
+// @Param book body model.Books true "Updated book"
+// @Success 200 {object} model.Books
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /books/{id} [put]
 func (h *BookHandler) Update(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if id == "" {
@@ -87,6 +117,14 @@ func (h *BookHandler) Update(c *fiber.Ctx) error {
 	})
 }
 
+// @Summary Delete a book
+// @Description Deletes the book with the given ID
+// @Tags books
+// @Param id path int true "Book ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /books/{id} [delete]
 func (h *BookHandler) Delete(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if id == "" {
