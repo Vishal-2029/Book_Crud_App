@@ -9,3 +9,9 @@ run:
 
 docker:
 	docker compose up --build
+
+tidy:
+	go mod tidy
+
+test:
+	go test ./...
