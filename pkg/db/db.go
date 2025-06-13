@@ -4,6 +4,7 @@ import (
 
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -21,34 +22,44 @@ type Book struct {
 }
 
 func Connect() *gorm.DB {
+	// Load .env file (optional) 
 	if err := godotenv.Load(); err != nil {
-		fmt.Println("Warning: .env file not loaded")
-	}
+	fmt.Println("Warning: .env file not loaded")
+}
 
+	// Read environment variables
 	DbHost := os.Getenv("DB_HOST")
-	DbPort := os.Getenv("DB_PORT")
 	DbName := os.Getenv("DB_NAME")
 	DbUsername := os.Getenv("DB_USER")
 	DbPassword := os.Getenv("DB_PASSWORD")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		DbUsername, DbPassword, DbHost, DbPort, DbName)
+	// DSN (Data Source Name) format
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		DbUsername, DbPassword, DbHost, DbName)
+		
+	fmt.Printf("DB credentials -> host: %s, user: %s, password: %s, dbname: %s\n",
+    DbHost, DbUsername, DbPassword, DbName)
 
-	dbConnection, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	var dbConnection *gorm.DB
+	var err error
+  
+	// Retry logic to wait for database
+	for i := 0; i < 10; i++ {
+		dbConnection, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		if err == nil {
+			fmt.Println("DB connected successfully")
+			break
+		}
+		fmt.Println("Waiting for DB... retrying")
+		time.Sleep(3 * time.Second)
+	}
+
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
 	}
 
-	sqlDB, err := dbConnection.DB()
-	if err != nil {
-		panic("Failed to get DB handle: " + err.Error())
-	}
-	if err := sqlDB.Ping(); err != nil {
-		panic("Database is unreachable: " + err.Error())
-	}
-
 	dbConnection.AutoMigrate(&Book{})
+
 	DB = dbConnection
 	return dbConnection
 }
-
