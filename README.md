@@ -52,8 +52,8 @@ cd bookcrud_app
     
 ### 4. API Documentation 
   - Swagger is used for API documentation.
-      Access Swagger UI at: ` http://localhost:8080/swagger/index.html `
-      OpenAPI spec: `docs/swagger.yaml`
+      - Access Swagger UI at: ` http://localhost:8080/swagger/index.html `
+      - OpenAPI spec: `docs/swagger.yaml`
 
 ## Running Tests
     `go test ./...`
