@@ -23,7 +23,7 @@ type Book struct {
 
 func Connect() *gorm.DB {
 	// Load .env file (optional) 
-	if err := godotenv.Load("../../.env"); err != nil {
+	if err := godotenv.Load(); err != nil {
 	fmt.Println("Warning: .env file not loaded")
 }
 
@@ -36,6 +36,9 @@ func Connect() *gorm.DB {
 	// DSN (Data Source Name) format
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		DbUsername, DbPassword, DbHost, DbName)
+		
+	fmt.Printf("DB credentials -> host: %s, user: %s, password: %s, dbname: %s\n",
+    DbHost, DbUsername, DbPassword, DbName)
 
 	var dbConnection *gorm.DB
 	var err error
