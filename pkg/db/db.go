@@ -4,7 +4,6 @@ import (
 
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -50,8 +49,6 @@ func Connect() *gorm.DB {
 			fmt.Println("DB connected successfully")
 			break
 		}
-		fmt.Println("Waiting for DB... retrying")
-		time.Sleep(3 * time.Second)
 	}
 
 	if err != nil {
